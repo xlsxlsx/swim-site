@@ -1,0 +1,10 @@
+# 部署到真实域名时，请把 example.com 替换为实际域名
+User-agent: *
+Allow: /
+Disallow: /REVIEW-审核记录.md
+Disallow: /PRD-游泳网站.md
+Disallow: /IA-信息架构.md
+Disallow: /内容模板.md
+Disallow: /check.js
+
+Sitemap: https://example.com/sitemap.xml

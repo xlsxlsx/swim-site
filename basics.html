@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>零基础 5 课 · 泳道 · 游泳学院</title>
+  <meta name="description" content="游泳零基础入门：下水前 5 课，适应水、呼气、漂浮、仰漂呼救与扶边移动">
+  <link rel="canonical" href="./basics.html">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="泳道 · 游泳学院">
+  <meta property="og:title" content="零基础 5 课 · 泳道 · 游泳学院">
+  <meta property="og:description" content="怕水、零基础从这开始：适应水、水中呼气、扶边漂浮、仰漂呼救、扶边移动">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Course","name":"游泳零基础 5 课","description":"适应水、呼气、漂浮、仰漂呼救与扶边移动","inLanguage":["zh-CN","en"],"isPartOf":{"@type":"WebSite","name":"泳道 · 游泳学院"}}
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main id="main">
+    <noscript>
+      <section class="section"><h2>下水前 5 课 · L0 零基础</h2>
+      <p>适应水与扶边、水中呼气与吐泡、扶边俯漂与自主站立、仰漂与呼救、扶边移动与轻打腿。全程浅水区，有成人或教练陪同。</p>
+      <p>每课含目标、练习步骤、常见错误纠正与相关安全条目。</p></section>
+    </noscript>
+  </main>
+  <footer id="site-footer"></footer>
+
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+  <script>
+    function pageRender() {
+      document.title = fill(u("basics_title"), CONTENT.basics.lessons.length) + " · " + u("brand");
+      setMetaDesc(fill(t(CONTENT.basics.meta), CONTENT.basics.lessons.length));
+
+      var lessons = CONTENT.basics.lessons.map(function (l, i) {
+        var steps = l.steps.map(function (s) { return "<li>" + esc(t(s)) + "</li>"; }).join("");
+        return '<article class="card lesson-card">' +
+          '<div class="lesson-head"><span class="lesson-no">' + (i + 1) + '</span>' +
+          '<h3>' + esc(t(l.title)) + '</h3></div>' +
+          '<p class="sec"><strong>' + u("goal_l") + '：</strong>' + esc(t(l.goal)) + '</p>' +
+          '<p class="sub-label">' + u("steps_l") + '</p>' +
+          '<ol class="lesson-steps">' + steps + '</ol>' +
+          '<p class="sec lesson-fix"><strong>' + u("fix") + '：</strong>' + esc(t(l.mistake)) + '</p>' +
+          safetyLinksHtml(l.related) + '</article>';
+      }).join("");
+
+      document.getElementById("main").innerHTML =
+        '<section class="section"><h2>' + fill(u("basics_title"), CONTENT.basics.lessons.length) + '</h2>' +
+        '<p class="sub">' + esc(fill(t(CONTENT.basics.intro), CONTENT.basics.lessons.length)) + '</p>' +
+        '<div class="note-banner"><strong>' + u("safety_first") + '：</strong>' + esc(t(CONTENT.basics.note)) + '</div>' +
+        '<div class="lesson-list">' + lessons + '</div>' +
+        '<section class="next-block"><h3>' + u("next_steps") + '</h3>' +
+        nextLinksHtml(CONTENT.basics.next) + '</section></section>';
+    }
+    initChrome("", pageRender);
+  </script>
+</body>
+</html>

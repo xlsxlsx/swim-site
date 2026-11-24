@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>等级自测 · 泳道 · 游泳学院</title>
+  <meta name="description" content="游泳等级自测">
+  <link rel="canonical" href="./levels.html">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="泳道 · 游泳学院">
+  <meta property="og:title" content="等级自测与学习路径 · 泳道 · 游泳学院">
+  <meta property="og:description" content="5 题游泳等级自测，按 L0–L3 推荐起点与学习路径">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Quiz","name":"游泳等级自测","description":"5 题按总分推荐 L0–L3 起点等级","inLanguage":["zh-CN","en"],"isPartOf":{"@type":"WebSite","name":"泳道 · 游泳学院"}}
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main id="main">
+    <noscript>
+      <section class="section"><h2>游泳等级自测与学习路径</h2>
+      <p>L0–L3 完整学习路径：零基础 5 课、蛙泳入门、训练与装备、L3 进阶技术。5 题自测按总分推荐起点等级，并给出 3 个内容入口。</p></section>
+    </noscript>
+  </main>
+  <footer id="site-footer"></footer>
+
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+  <script>
+    function findBand(score) {
+      for (var i = 0; i < CONTENT.quiz.bands.length; i++) {
+        if (score <= CONTENT.quiz.bands[i].max) return CONTENT.quiz.bands[i];
+      }
+      return CONTENT.quiz.bands[CONTENT.quiz.bands.length - 1];
+    }
+
+    function levelName(id) {
+      for (var i = 0; i < CONTENT.levels.length; i++) if (CONTENT.levels[i].id === id) return t(CONTENT.levels[i].name);
+      return id;
+    }
+
+    function showResult() {
+      var scores = [];
+      for (var i = 0; i < CONTENT.quiz.questions.length; i++) {
+        var picked = document.querySelector('input[name="q' + i + '"]:checked');
+        if (!picked) {
+          document.getElementById("quizError").textContent = fill(u("need_answer"), CONTENT.quiz.questions.length);
+          return;
+        }
+        scores.push(parseInt(picked.value, 10));
+      }
+      document.getElementById("quizError").textContent = "";
+      var total = scores.reduce(function (a, b) { return a + b; }, 0);
+      var band = findBand(total);
+      var maxScore = CONTENT.quiz.bands[CONTENT.quiz.bands.length - 1].max;
+
+      document.getElementById("quizResult").innerHTML =
+        '<section class="card result-card">' +
+        '<p class="score">' + u("score_label") + ': ' + total + ' / ' + maxScore + '</p>' +
+        '<p class="level-big">' + esc(band.level) + ' · ' + esc(levelName(band.level)) + '</p>' +
+        '<p>' + esc(t(band.text)) + '</p>' +
+        '<div class="btn-row">' +
+        band.links.map(function (n, i) {
+          return '<a class="btn ' + (i === 0 ? 'btn-blue' : 'btn-plain') + '" href="' + n.href + '">' + esc(t(n.label)) + '</a>';
+        }).join("") +
+        '<a class="btn btn-plain" href="index.html">' + u("sec_levels") + '</a>' +
+        '</div></section>';
+      document.getElementById("quizResult").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function quizAnswers() {
+      var out = [];
+      for (var i = 0; i < CONTENT.quiz.questions.length; i++) {
+        var picked = document.querySelector('input[name="q' + i + '"]:checked');
+        out.push(picked ? picked.value : null);
+      }
+      return out;
+    }
+
+    // 语言切换会重绘 main，这里保存/恢复自测答案与结果（结果按新语言重新计算）
+    window.capturePageState = function () {
+      var answers = quizAnswers();
+      return { answers: answers, done: answers.every(function (v) { return v !== null; }) };
+    };
+    window.restorePageState = function (s) {
+      if (!s) return;
+      (s.answers || []).forEach(function (v, i) {
+        if (v === null) return;
+        var el = document.querySelector('input[name="q' + i + '"][value="' + v + '"]');
+        if (el) el.checked = true;
+      });
+      if (s.done) showResult();
+    };
+
+    function pageRender() {
+      document.title = fill(u("quiz_title"), CONTENT.quiz.questions.length) + " · " + u("brand");
+      setMetaDesc(u("quiz_intro"));
+
+      var pathCards = CONTENT.levels.map(function (l) {
+        return '<a class="card level-card path-card lv' + l.id.slice(1) + '" href="' + l.href + '">' +
+          '<div class="level-id">' + l.id + '</div>' +
+          '<h3>' + esc(t(l.name)) + '</h3>' +
+          '<p>' + esc(t(l.focus)) + '</p>' +
+          '<p style="margin-top:8px;color:var(--blue)">➡ ' + esc(t(l.next)) + '</p>' +
+          '</a>';
+      }).join("");
+
+      var qs = CONTENT.quiz.questions.map(function (q, qi) {
+        return '<fieldset class="quiz-q"><legend style="display:none"></legend><h3>' + (qi + 1) + '. ' + esc(t(q.q)) + '</h3>' +
+          q.opts.map(function (o, oi) {
+            return '<label><input type="radio" name="q' + qi + '" value="' + o.score + '">' + esc(t(o.label)) + '</label>';
+          }).join("") + '</fieldset>';
+      }).join("");
+
+      document.getElementById("main").innerHTML =
+        '<section class="section"><h2>' + u("path_title") + '</h2>' +
+        '<p class="sub">' + u("path_sub") + '</p>' +
+        '<div class="path-grid">' + pathCards + '</div></section>' +
+        '<section class="section"><h2>' + fill(u("quiz_title"), CONTENT.quiz.questions.length) + '</h2>' +
+        '<p class="sub">' + u("quiz_intro") + '</p>' +
+        '<form id="quizForm" novalidate>' + qs +
+        '<p class="quiz-error" id="quizError"></p>' +
+        '<div class="quiz-actions">' +
+        '<button class="btn btn-blue" type="submit">' + u("submit") + '</button>' +
+        '<button class="btn btn-plain" type="button" id="retake">' + u("retake") + '</button>' +
+        '</div></form>' +
+        '<div id="quizResult"></div></section>';
+
+      document.getElementById("quizForm").addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        showResult();
+      });
+      document.getElementById("retake").addEventListener("click", function () {
+        var form = document.getElementById("quizForm");
+        var inputs = form.querySelectorAll('input[type="radio"]');
+        Array.prototype.forEach.call(inputs, function (r) { r.checked = false; });
+        document.getElementById("quizResult").innerHTML = "";
+        document.getElementById("quizError").textContent = "";
+        form.scrollIntoView({ behavior: "smooth" });
+      });
+    }
+    initChrome("levels", pageRender);
+  </script>
+</body>
+</html>

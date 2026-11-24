@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>泳姿教程 · 泳道 · 游泳学院</title>
+  <meta name="description" content="4 大泳姿分步教程">
+  <link rel="canonical" href="./strokes.html">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="泳道 · 游泳学院">
+  <meta property="og:title" content="泳姿教程 · 泳道 · 游泳学院">
+  <meta property="og:description" content="蛙泳、自由泳、仰泳、蝶泳分步教程：动作分解、节奏、常见错误与练习计划">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"CollectionPage","name":"泳姿教程","description":"蛙泳、自由泳、仰泳、蝶泳分步教程","inLanguage":["zh-CN","en"],"isPartOf":{"@type":"WebSite","name":"泳道 · 游泳学院"}}
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main id="main">
+    <noscript>
+      <section class="section"><h2>泳姿教程</h2>
+      <p>4 大泳姿：蛙泳、自由泳、仰泳、蝶泳。每篇含简介、动作分解、节奏配合、常见错误与纠正、分等级练习计划与 B 站教学视频。</p>
+      <p>另有一只隐藏款彩蛋泳姿，仅供娱乐。</p></section>
+    </noscript>
+  </main>
+  <footer id="site-footer"></footer>
+
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+  <script>
+    function pageRender() {
+      document.title = u("strokes_title") + " · " + u("brand");
+      setMetaDesc(u("strokes_sub"));
+      document.getElementById("main").innerHTML =
+        '<section class="section"><h2>' + u("strokes_title") + '</h2>' +
+        '<p class="sub">' + u("strokes_sub") + '</p>' +
+        '<div class="grid">' + CONTENT.strokes.map(strokeCard).join("") + '</div>' +
+        '</section>';
+    }
+    initChrome("strokes", pageRender);
+  </script>
+</body>
+</html>

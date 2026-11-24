@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>训练计划与装备选购 · 泳道 · 游泳学院</title>
+  <meta name="description" content="L1–L3 跨泳姿训练计划与游泳装备选购指南，含量化指标与避坑要点">
+  <link rel="canonical" href="./training.html">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="泳道 · 游泳学院">
+  <meta property="og:title" content="训练计划与装备选购 · 泳道 · 游泳学院">
+  <meta property="og:description" content="L1–L3 周训练计划、配速与量化指标，以及泳镜泳帽泳衣等装备选购判断标准">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebPage","name":"训练计划与装备选购","description":"L1–L3 周训练计划与游泳装备选购指南","inLanguage":["zh-CN","en"],"isPartOf":{"@type":"WebSite","name":"泳道 · 游泳学院"}}
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main id="main">
+    <noscript>
+      <section class="section"><h2>训练计划与装备选购</h2>
+      <p>L1 第一个完整泳姿（4–6 周）、L2 效率提速与减脂（8 周）、L3 周期化与专项（3 周加量 + 1 周减量）。</p>
+      <p>装备部分讲泳镜、处方泳镜、泳帽、泳衣、浮板、耳塞鼻夹、公开水域浮球、儿童浮力衣与训练呼吸管的选购标准和避坑。</p></section>
+    </noscript>
+  </main>
+  <footer id="site-footer"></footer>
+
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+  <script>
+    function pageRender() {
+      document.title = u("training_title") + " · " + u("brand");
+      setMetaDesc(t(CONTENT.training.meta));
+
+      var plans = CONTENT.training.plans.map(function (p) {
+        var blocks = p.blocks.map(function (b) { return "<li>" + esc(t(b)) + "</li>"; }).join("");
+        return '<article class="card plan-card">' +
+          '<div class="plan-head"><span class="chip lv-' + p.level + '">' + p.level + '</span>' +
+          '<h3>' + esc(t(p.title)) + '</h3></div>' +
+          '<p class="sec"><strong>' + u("cycle_l") + '：</strong>' + esc(t(p.cycle)) +
+          '　<strong>' + u("frequency_l") + '：</strong>' + esc(t(p.frequency)) + '</p>' +
+          '<ul class="point-list">' + blocks + '</ul>' +
+          '<p class="sec measure"><strong>' + u("measure_l") + '：</strong>' + esc(t(p.measure)) + '</p></article>';
+      }).join("");
+
+      var gear = CONTENT.training.gear.map(function (g) {
+        return '<article class="card gear-card"><h3>' + esc(t(g.name)) + '</h3>' +
+          '<p class="sec"><strong>' + u("criteria_l") + '：</strong>' + esc(t(g.criteria)) + '</p>' +
+          '<p class="sec"><strong>' + u("avoid_l") + '：</strong>' + esc(t(g.avoid)) + '</p>' +
+          safetyLinksHtml(g.related) + '</article>';
+      }).join("");
+
+      document.getElementById("main").innerHTML =
+        '<section class="section"><h2>' + u("training_title") + '</h2>' +
+        '<p class="sub">' + esc(fill(t(CONTENT.training.intro), CONTENT.training.plans.length)) + '</p>' +
+        '<div class="note-banner"><strong>' + u("safety_first") + '：</strong>' + esc(t(CONTENT.training.note)) + '</div>' +
+        '<h3 class="block-title">' + u("plans_title") + '</h3>' +
+        '<div class="plan-list">' + plans + '</div></section>' +
+        '<section class="section"><h3 class="block-title">' + u("gear_title") + '</h3>' +
+        '<div class="gear-grid">' + gear + '</div>' +
+        '<section class="next-block"><h3>' + u("next_steps") + '</h3>' +
+        nextLinksHtml(CONTENT.training.next) + '</section></section>';
+    }
+    initChrome("", pageRender);
+  </script>
+</body>
+</html>

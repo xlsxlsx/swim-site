@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>泳道 · 游泳学院</title>
+  <meta name="description" content="系统化游泳教学">
+  <link rel="canonical" href="./index.html">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="泳道 · 游泳学院">
+  <meta property="og:title" content="泳道 · 游泳学院">
+  <meta property="og:description" content="系统化游泳教学：4 大泳姿、安全条目、等级自测与学习路径">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebPage","name":"泳道 · 游泳学院","description":"系统化游泳教学：4 大泳姿、安全条目、等级自测与学习路径","inLanguage":["zh-CN","en"],"isPartOf":{"@type":"WebSite","name":"泳道 · 游泳学院"}}
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main id="main">
+    <noscript>
+      <section class="section"><h2>泳道 · 游泳学院</h2>
+      <p>系统化游泳教学：4 大泳姿（蛙泳、自由泳、仰泳、蝶泳）分步教程、39 条安全注意事项、等级自测与 L0–L3 学习路径。</p>
+      <p>本页正文由 JavaScript 渲染，请开启脚本或使用支持 JavaScript 的浏览器获取完整交互内容。</p></section>
+    </noscript>
+  </main>
+  <footer id="site-footer"></footer>
+
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+  <script>
+    function pageRender() {
+      document.title = u("brand") + " · " + u("nav_home");
+      setMetaDesc(fill(t(CONTENT.homeMeta), CONTENT.safety.length));
+
+      var levelCards = CONTENT.levels.map(function (l) {
+        return '<a class="card level-card lv' + l.id.slice(1) + '" href="' + l.href + '">' +
+          '<div class="level-id">' + l.id + '</div>' +
+          '<h3>' + esc(t(l.name)) + '</h3>' +
+          '<p>' + esc(t(l.focus)) + '</p>' +
+          '<p style="margin-top:8px;color:var(--blue)">➡ ' + esc(t(l.next)) + '</p>' +
+          '</a>';
+      }).join("");
+
+      var strokeCards = CONTENT.strokes.slice(0, 4).map(strokeCard).join("");
+
+      var featured = CONTENT.featuredSafety.map(function (id) {
+        var e = null;
+        for (var i = 0; i < CONTENT.safety.length; i++) if (CONTENT.safety[i].id === id) e = CONTENT.safety[i];
+        return '<a class="card safety-card" href="safety.html">' +
+          '<div class="safety-head">' + catChip(e.category) +
+          '<h3>' + esc(t(e.title)) + '</h3></div>' +
+          '<p class="sec"><strong>' + u("risk_l") + '：</strong>' + esc(t(e.risk)) + '</p>' +
+          '<span class="badge-pending">⚠ ' + u("review_pending") + '</span></a>';
+      }).join("");
+
+      document.getElementById("main").innerHTML =
+        '<section class="hero">' +
+        '<span class="kicker">' + u("hero_kicker") + '</span>' +
+        '<h1>' + u("hero_title") + '</h1>' +
+        '<p>' + fill(u("hero_sub"), CONTENT.safety.length) + '</p>' +
+        '<div class="cta-row">' +
+        '<a class="btn btn-primary" href="strokes.html">' + u("cta_strokes") + '</a>' +
+        '<a class="btn btn-ghost" href="levels.html">' + u("cta_quiz") + '</a>' +
+        '<a class="btn btn-ghost" href="basics.html">' + u("cta_basics") + '</a>' +
+        '</div></section>' +
+
+        '<section class="section"><h2>' + u("sec_levels") + '</h2>' +
+        '<p class="sub">' + fill(u("sec_levels_sub"), CONTENT.quiz.questions.length) + '</p>' +
+        '<div class="grid">' + levelCards + '</div>' +
+        '<p style="margin-top:14px"><a class="btn btn-blue" href="levels.html">' + u("quiz_cta") + '</a></p></section>' +
+
+        '<section class="section"><h2>' + u("sec_strokes") + '</h2>' +
+        '<div class="grid">' + strokeCards + '</div>' +
+        '<p style="margin-top:14px"><a href="strokes.html">' + u("view_all_strokes") + '</a></p></section>' +
+
+        '<section class="section"><h2>' + u("sec_safety") + '</h2>' +
+        '<div class="grid grid-3">' + featured + '</div>' +
+        '<p style="margin-top:14px"><a href="safety.html">' + u("view_all_safety") + '</a></p></section>';
+    }
+    initChrome("home", pageRender);
+  </script>
+</body>
+</html>

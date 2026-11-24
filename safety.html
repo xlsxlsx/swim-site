@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>安全注意事项 · 泳道 · 游泳学院</title>
+  <meta name="description" content="游泳安全注意事项">
+  <link rel="canonical" href="./safety.html">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="泳道 · 游泳学院">
+  <meta property="og:title" content="安全注意事项 · 泳道 · 游泳学院">
+  <meta property="og:description" content="场所安全、身体禁忌、突发应对、儿童防护与游泳用品：风险、预防与紧急处理">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"CollectionPage","name":"游泳安全注意事项","description":"场所、身体禁忌、突发应对、儿童防护与游泳用品安全条目","inLanguage":["zh-CN","en"],"isPartOf":{"@type":"WebSite","name":"泳道 · 游泳学院"}}
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main id="main">
+    <noscript>
+      <section class="section"><h2>游泳安全注意事项</h2>
+      <p>按五类分组的安全条目：场所安全、身体禁忌、突发应对、儿童防护、游泳用品。每条含风险说明、预防措施与紧急处理，支持关键词搜索。</p>
+      <p>当前条目均为 AI 初稿，待持证教练终审；相关状态与来源说明见审核记录。</p></section>
+    </noscript>
+  </main>
+  <footer id="site-footer"></footer>
+
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+  <script>
+    var state = { cat: "all", q: "" };
+    var CATS = ["all", "venue", "contraindication", "emergency", "child", "gear"];
+    try {
+      var qs = new URLSearchParams(location.search);
+      if (qs.get("q")) state.q = qs.get("q");
+    } catch (err) {}
+
+    function catLabel(c) { return c === "all" ? u("cat_all") : u("cat_" + c); }
+
+    function terms() { return state.q.trim().toLowerCase().split(/\s+/).filter(Boolean); }
+
+    function fields(e) {
+      return {
+        title: (e.title.zh + " " + e.title.en).toLowerCase(),
+        cat: (UI["cat_" + e.category].zh + " " + UI["cat_" + e.category].en).toLowerCase(),
+        body: [e.risk.zh, e.risk.en, e.prevention.zh, e.prevention.en, e.emergency.zh, e.emergency.en].join(" ").toLowerCase()
+      };
+    }
+
+    // 多关键词 AND；标题命中优先、分类其次、正文最后（首条相关率）
+    function filtered() {
+      var ts = terms();
+      return CONTENT.safety.filter(function (e) {
+        if (state.cat !== "all" && e.category !== state.cat) return false;
+        if (!ts.length) return true;
+        var f = fields(e);
+        var hay = f.title + " " + f.cat + " " + f.body;
+        return ts.every(function (t) { return hay.indexOf(t) >= 0; });
+      }).map(function (e) {
+        var f = fields(e);
+        var score = 0;
+        ts.forEach(function (t) {
+          if (f.title.indexOf(t) >= 0) score += 4;
+          if (f.cat.indexOf(t) >= 0) score += 2;
+        });
+        return { e: e, score: score };
+      }).sort(function (a, b) {
+        return b.score - a.score || CONTENT.safety.indexOf(a.e) - CONTENT.safety.indexOf(b.e);
+      }).map(function (x) { return x.e; });
+    }
+
+    function renderList() {
+      var list = filtered();
+      var line = document.getElementById("resultLine");
+      line.textContent = list.length + " " + u("results");
+      document.getElementById("safetyList").innerHTML = list.length
+        ? list.map(function (e) {
+            var html = safetyCard(e, state.q);
+            return html.replace('class="card safety-card"', 'class="card safety-card cat-' + e.category + '-border"');
+          }).join("")
+        : '<p class="sub">' + u("no_results") + '</p>';
+      try {
+        var url = new URL(location.href);
+        if (state.q) url.searchParams.set("q", state.q); else url.searchParams.delete("q");
+        history.replaceState(null, "", url);
+      } catch (err) {}
+    }
+
+    function pageRender() {
+      document.title = u("safety_title") + " · " + u("brand");
+      setMetaDesc(fill(u("safety_sub"), CONTENT.safety.length));
+
+      document.getElementById("main").innerHTML =
+        '<section class="section"><h2>' + u("safety_title") + '</h2>' +
+        '<p class="sub">' + fill(u("safety_sub"), CONTENT.safety.length) + '</p>' +
+        '<div class="review-banner" role="note">' +
+        '<h3>⚠ ' + u("review_banner") + ' · ' + CONTENT.safety.length + ' ' + u("entries_pending") + '</h3>' +
+        '<p>' + esc(t(CONTENT.reviewPolicy.summary)) + '</p>' +
+        '<p class="review-rule">' + esc(t(CONTENT.reviewPolicy.sourceRule)) + '</p>' +
+        '</div>' +
+        '<div class="toolbar">' +
+        '<label class="sr-only" for="q">' + esc(u("search_ph")) + '</label>' +
+        '<input class="search" id="q" type="search" placeholder="' + esc(u("search_ph")) + '" aria-label="' + esc(u("search_ph")) + '">' +
+        '<div class="filter-chips">' + CATS.map(function (c) {
+          return '<button data-cat="' + c + '" aria-pressed="' + (state.cat === c) + '">' + catLabel(c) + '</button>';
+        }).join("") + '</div></div>' +
+        '<p class="result-line" id="resultLine" role="status" aria-live="polite"></p>' +
+        '<div class="safety-list" id="safetyList"></div></section>';
+
+      var input = document.getElementById("q");
+      input.value = state.q;
+      input.addEventListener("input", function () { state.q = this.value; renderList(); });
+
+      var buttons = document.querySelectorAll(".filter-chips button");
+      Array.prototype.forEach.call(buttons, function (btn) {
+        btn.addEventListener("click", function () {
+          state.cat = this.getAttribute("data-cat");
+          Array.prototype.forEach.call(buttons, function (b) {
+            b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+          });
+          renderList();
+        });
+      });
+
+      renderList();
+
+      // 支持从其他页面深链到具体条目（safety.html#s-cramp）
+      if (location.hash.indexOf("#s-") === 0) {
+        var target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+    initChrome("safety", pageRender);
+  </script>
+</body>
+</html>
